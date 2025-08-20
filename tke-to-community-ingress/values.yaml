@@ -1,0 +1,6 @@
+controller:
+  ingressClass: new-test # 新 IngressClass 名称，避免冲突
+  ingressClassResource:
+    name: new-test
+    enabled: true
+    controllerValue: k8s.io/new-test
