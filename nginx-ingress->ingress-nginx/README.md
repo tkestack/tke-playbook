@@ -21,18 +21,18 @@ TKE Nginx Ingress 扩展组件已不再支持 TKE 1.30 及以上版本。若需�
 ### 先部署 Nginx 的 Demo，并利用 TKE Nginx Ingress 启动，后续完成多方案迁移
 
 #### 第一步：新增 Nginx Ingress
-![img_11.png](img_11.png)
+![img_11.png](images/img_11.png)
 
 #### 第二步：进入集群验证 Nginx Ingress 是否创建
 ```bash
 kubectl get ingressclass
 ```
-![img_4.png](img_4.png)
+![img_4.png](images/img_4.png)
 
 ```bash
 kubectl get svc
 ```
-![img_12.png](img_12.png)
+![img_12.png](images/img_12.png)
 
 #### 第三步：创建 Demo
 
@@ -75,14 +75,14 @@ spec:
 ```bash
 kubectl apply -f nginx-deploy-svc.yaml
 ```
-![img_13.png](img_13.png)
+![img_13.png](images/img_13.png)
 
 2. 将 `nginx-demo-svc` 挂载到 TKE 旧插件的 IngressClass `test`
-![img_7.png](img_7.png)
-![img_14.png](img_14.png)
+![img_7.png](images/img_7.png)
+![img_14.png](images/img_14.png)
 
 3. 使用 `curl` 测试
-![img_8.png](img_8.png)
+![img_8.png](images/img_8.png)
 
 ### 升级切换
 
@@ -144,30 +144,30 @@ helm upgrade --install new-test-ingress-nginx ingress-nginx/ingress-nginx \
 ```bash
 kubectl -n ingress-nginx get svc
 ```
-![img_15.png](img_15.png)
+![img_15.png](images/img_15.png)
 `EXTERNAL-IP` 为新的流量入口，后续验证转发是否正常。
 
 6. 持续访问 `a.com`，确保流量迁移无中断
 ```bash
 while true; do date '+%F %T'; curl -s -o /dev/null -w '%{http_code} %{time_total}\n' a.com; sleep 1; done
 ```
-![img_16.png](img_16.png)
+![img_16.png](images/img_16.png)
 
 7. 复制 Ingress 配置文件资源
 将使用旧 IngressClass 的 Ingress 资源 YAML 文件保存并修改名称（如添加前缀 `new-`），然后应用到集群中。确保新旧 Nginx Ingress 实例的转发规则一致。
-![img_19.png](img_19.png)
-![img_21.png](img_21.png)
+![img_19.png](images/img_19.png)
+![img_21.png](images/img_21.png)
 
 8. 观察长 Ping 是否中断
-![img_22.png](img_22.png)
+![img_22.png](images/img_22.png)
 
 9. 删除原 `test` 的 Ingress
-![img_23.png](img_23.png)
+![img_23.png](images/img_23.png)
 
 10. 观察长 Ping
-![img_24.png](img_24.png)
+![img_24.png](images/img_24.png)
 
 11. 删除旧 Nginx Ingress 实例
-![img_25.png](img_25.png)
+![img_25.png](images/img_25.png)
 
 至此，迁移 Demo 实例已完成。
