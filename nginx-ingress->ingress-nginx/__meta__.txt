@@ -1,0 +1,5 @@
+title = 'nginx-ingress->ingress-nginx'
+description = '从 TKE Nginx Ingress 插件迁移到自建 Nginx Ingress'
+class = "TKE"
+tag = ["TKE，Ingress"]
+draft = false
