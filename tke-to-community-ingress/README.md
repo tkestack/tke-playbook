@@ -24,7 +24,7 @@ TKE NginxIngress 扩展组件已不再支持 TKE 1.30 及以上版本。若需�
 
 
 ### 第一阶段：环境准备
-#### 部署模拟使用TKE NginxIngress组件的线上业务环境：（如有则可选）
+#### 部署模拟使用TKE NginxIngress组件的线上业务环境：（如已有则可选）
 ```bash
 ./install-tke-ingress.sh
 ```
@@ -39,6 +39,7 @@ TKE NginxIngress 扩展组件已不再支持 TKE 1.30 及以上版本。若需�
 ```bash
 ./install-community-ingress.sh
 ```
+[Helm 官方仓库](https://kubernetes.github.io/ingress-nginx) 
 
 
 在该脚本中，会自动配置 [values.yaml](file:///Users/tangtang/Desktop/Go/src/PlayBook-TKE/nginx-ingress->ingress-nginx/values.yaml) 文件来部署新的 Ingress-nginx Controller：
@@ -72,7 +73,7 @@ controller:
 - 创建新的 Ingress 规则，实现新旧版本并存
 - 验证新旧 Ingress 配置是否都正常工作
 - 测试新 Ingress 暴露的业务是否可以正常访问
-#### 验证迁移后的访问结果
+#### 验证新自建ingress-nginx的访问结果
 ````
 2025-08-20 13:11:53
 200 0.003802
@@ -87,9 +88,8 @@ controller:
 2025-08-20 13:11:58
 ````
 
-### 第二阶段：升级迁移
+### 第二阶段：平滑迁移
 #### 执行平滑迁移
-执行平滑迁移操作：
 ```bash
 ./migrate.sh
 ```

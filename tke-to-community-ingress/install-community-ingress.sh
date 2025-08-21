@@ -59,31 +59,36 @@ echo "7. 获取新 Nginx Ingress 的流量入口..."
 kubectl -n ingress-nginx get svc
 # 创建新的 Ingress 资源
 echo "8. 复制并修改 Ingress 配置..."
-# 获取现有 Ingress 信息
-old_ingress=$(kubectl get ingress -A | grep -v NAME | head -1)
-old_namespace=$(echo $old_ingress | awk '{print $1}')
-old_name=$(echo $old_ingress | awk '{print $2}')
 
-echo "处理 Ingress: $old_name 在命名空间: $old_namespace"
+# 检查是否存在 nginx-demo-ingress.yaml 文件
+if [ ! -f "nginx-demo-ingress.yaml" ]; then
+  echo "错误: nginx-demo-ingress.yaml 文件不存在"
+  exit 1
+fi
 
-# 创建新的 Ingress 配置
-kubectl get ingress $old_name -n $old_namespace -o yaml | \
-  sed 's/kubernetes.io\/ingress.class: test/kubernetes.io\/ingress.class: new-test/' | \
-  sed 's/name: '"$old_name"'/name: new-'"$old_name"'/' | \
-  kubectl apply -f -
+# 复制并修改 Ingress 配置文件
+cp nginx-demo-ingress.yaml new-nginx-demo-ingress.yaml
+
+# 修改 IngressClass 为 new-test
+sed -i 's/kubernetes.io\/ingress.class: test/kubernetes.io\/ingress.class: new-test/' new-nginx-demo-ingress.yaml
+
+# 修改 Ingress 名称
+sed -i 's/name: nginx-demo-ingress/name: new-nginx-demo-ingress/' new-nginx-demo-ingress.yaml
+
+# 应用新创建的 Ingress 配置文件
+kubectl apply -f new-nginx-demo-ingress.yaml
 
 echo "9. 验证新旧 Ingress..."
-kubectl get ingress $old_name -n $old_namespace
-kubectl get ingress new-$old_name -n $old_namespace
+kubectl get ingress nginx-demo-ingress
+kubectl get ingress new-nginx-demo-ingress
 
 echo "10. 测试访问5秒..."
-host=$(kubectl get ingress $old_name -n $old_namespace -o jsonpath='{.spec.rules[0].host}')
+# 获取新 Ingress 的外部 IP
+new_external_ip=$(kubectl get svc -n ingress-nginx new-test-ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+host=$(kubectl get ingress nginx-demo-ingress -o jsonpath='{.spec.rules[0].host}')
 
+echo "测试新 Ingress 的访问..."
 for i in {1..5}; do
-  curl -s -w "%{http_code} %{time_total}\n" -o /dev/null http://$host
+  curl -s -w "%{http_code} %{time_total}\n" -o /dev/null -H "Host: $host" http://$new_external_ip
   sleep 1
 done
-
-
-
-
