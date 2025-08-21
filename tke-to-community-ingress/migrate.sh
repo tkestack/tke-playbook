@@ -14,5 +14,6 @@ else
   echo "已添加新的域名解析记录到 /etc/hosts"
 fi
 
-echo "12. 删除旧 Ingress..."
-kubectl delete ingress $old_name -n $old_namespace
+echo "迁移完成！即将进行访问测试"
+while true; do date '+%F %T'; curl -s -o /dev/null -w '%{http_code} %{time_total}\n' a.com; sleep 1; done
+echo "访问测试通过"

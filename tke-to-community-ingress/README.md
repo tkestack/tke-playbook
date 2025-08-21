@@ -3,7 +3,7 @@
 ## 背景
 TKE Nginx Ingress 扩展组件已不再支持 TKE 1.30 及以上版本。若需升级集群版本至 1.30 或更高，需移除低版本集群中的 Nginx Ingress 扩展组件，并切换至社区版 Nginx Ingress。
 
-为了实现现网流量的无损切换，本文档针对这一升级场景，整理了已验证的具体操作步骤，帮助低版本集群在复用现有 IngressClass 和 Service 的前提下，顺利完成 TKE NginxIngress 的切换升级，确保业务流量平稳过渡。
+为了实现现网流量的无损切换，本文档针对这一升级场景，整理了已验证的具体操作步骤，帮助用户部署自建社区Ingress-nginx，顺利完成 TKE NginxIngress 的切换升级，确保业务流量平稳过渡。
 ![img.png](img.png)
 ## 切换升级方案
 
@@ -24,21 +24,20 @@ TKE Nginx Ingress 扩展组件已不再支持 TKE 1.30 及以上版本。若需�
 
 
 #### 第一阶段：环境准备
-部署模拟使用TKE NginxIngress组件的线上业务环境：
+##### 部署模拟使用TKE NginxIngress组件的线上业务环境：（可选）
 ```bash
-./deploy.sh
+./install-tke-ingress.sh
 ```
 
 
 该脚本将完成：
-1. 部署 TKE NginxIngress组件
+1. 部署 TKE NginxIngress组件 (默认watch所有命名空间)
 2. 创建测试应用 (nginx-demo)
 3. 配置基于 TKE 组件的 Ingress 规则
 
-#### 第二阶段：部署自建社区Ingress-nginx组件
-执行自建Ingress-nginx操作：
+##### 部署自建社区Ingress-nginx组件
 ```bash
-./Ingress-chart.sh
+./install-community-ingress.sh
 ```
 
 
@@ -51,6 +50,9 @@ controller:
     name: new-test
     enabled: true
     controllerValue: k8s.io/new-test
+  scope:  
+    enabled: true
+    namespace: "ingress-nginx" # Nginx Controller监听处理指定命名空间下的Ingress资源 (可选)
 ```
 
 
@@ -69,10 +71,10 @@ controller:
 - 复制现有 Ingress 配置并修改 IngressClass 为 new-test
 - 创建新的 Ingress 规则，实现新旧版本并存
 - 验证新旧 Ingress 配置是否都正常工作
-- 进行访问测试确保服务正常
+- 测试新 Ingress 暴露的业务是否可以正常访问
 
 
-#### 第三阶段：升级迁移
+#### 第二阶段：升级迁移
 ##### 执行平滑迁移
 执行平滑迁移操作：
 ```bash
@@ -80,9 +82,19 @@ controller:
 ```
 该脚本将完成：
 - 配置 DNS 解析，将域名指向新的 Ingress 入口
-- 逐步清理旧资源：删除旧 Ingress → 删除 TKE NginxIngress 组件
 - 验证迁移后服务的稳定性和可用性
-
-
+#### 测试输出
+````
+2025-08-20 13:11:21
+200 0.004012
+2025-08-20 13:11:22
+200 0.003383
+2025-08-20 13:11:23
+200 0.004883
+2025-08-20 13:11:24
+200 0.003996
+2025-08-20 13:11:25
+200 0.004589
+````
 ## 核心价值
 通过自动化脚本实现**零停机迁移**，新旧版本并行运行，避免业务中断，完成从 TKE 组件版到社区版的平滑升级。
