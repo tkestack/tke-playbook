@@ -25,3 +25,4 @@ This project provides Kubernetes chaos testing capabilities covering scenarios l
 class = "TKE"
 tag = ["HA, disaster recovery"]
 draft = false
+playbook_url = 'https://github.com/tkestack/tke-chaos-playbook'

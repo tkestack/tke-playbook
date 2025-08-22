@@ -9,3 +9,4 @@ This project provides Kubernetes-based scripts for AI large language model (LLM)
 class = "TKE"
 tag = ["AI"]
 draft = false
+playbook_url = 'https://github.com/tkestack/tke-ai-playbook'
