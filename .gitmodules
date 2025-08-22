@@ -1,6 +1,0 @@
-[submodule "tke-chaos-playbook"]
-	path = tke-chaos-playbook
-	url = https://github.com/tkestack/tke-chaos-playbook
-[submodule "tke-ai-playbook"]
-	path = tke-ai-playbook
-	url = https://github.com/tkestack/tke-ai-playbook
