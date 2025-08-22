@@ -3,3 +3,9 @@ description = '实现从 TKE Nginx Ingress 插件到社区版 Nginx Ingress 的�
 class = "TKE"
 tag = ["TKE，Ingress"]
 draft = false
+
+title_en = 'Migrate the TKE NginxIngress plugin to a self-built Nginx Ingress'
+description_en = 'Achieve smooth migration from the TKE Nginx Ingress plugin to the community version of Nginx Ingress'
+class_en = "TKE"
+tag_en = ["TKE，Ingress"]
+draft = false
