@@ -1,7 +1,6 @@
 #中文
 title = "Kubernetes故障演练Playbooks指南"
-description = "
-K8s中心化架构与声明式管理虽提升运维效率，却因链式故障风险威胁集群稳定性，具体表现为：  
+description = "K8s中心化架构与声明式管理虽提升运维效率，却因链式故障风险威胁集群稳定性，具体表现为：
 • 级联删除风险：误删namespace可能连带删除核心业务资源（如workload、Pod），导致业务中断。  
 
 • 控制面过载隐患：第三方组件（如DaemonSet监控）可能引发控制面故障，依赖控制面的组件（如coredns、Flink）连锁失效，造成数据面崩溃。  
@@ -20,8 +19,7 @@ playbook_url = 'https://github.com/tkestack/tke-chaos-playbook'
 
 #English
 title_en = "Kubernetes Chaos Testing Playbooks Guide"
-description_en = "
-Kubernetes' centralized architecture and declarative management model, while enabling efficient operations, also introduce critical risks of cascading failures. The open ecosystem (with third-party components like Flink and Rancher) and complex multi-service environments further exacerbate these risks:
+description_en = "Kubernetes' centralized architecture and declarative management model, while enabling efficient operations, also introduce critical risks of cascading failures. The open ecosystem (with third-party components like Flink and Rancher) and complex multi-service environments further exacerbate these risks:
 
 Cascading deletion disaster: A customer using Rancher to manage Kubernetes clusters accidentally deleted a namespace, which subsequently deleted all core business workloads and Pods in the production cluster, causing service interruption.
 Control plane overload: In a large OpenAI cluster, deploying a DaemonSet monitoring component triggered control plane failures and coredns overload. The coredns scaling depended on control plane recovery, affecting the data plane and causing global OpenAI service disruption.

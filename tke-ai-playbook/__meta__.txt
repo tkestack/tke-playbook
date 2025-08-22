@@ -1,8 +1,6 @@
 #中文
 title = "TKE AI 脚本箱"
-description = '
-本项目提供基于 Kubernetes 的 AI 大模型相关脚本，包含模型下载、部署推理服务、性能测试等模块，提供在 TKE 一站式体验 AI 相关功能的能力。
-'
+description = '本项目提供基于 Kubernetes 的 AI 大模型相关脚本，包含模型下载、部署推理服务、性能测试等模块，提供在 TKE 一站式体验 AI 相关功能的能力。'
 class = "TKE"
 tag = ["AI"]
 
@@ -12,8 +10,6 @@ playbook_url = 'https://github.com/tkestack/tke-ai-playbook'
 
 #English
 title_en = "TKE AI Playbook"
-description_en = "
-This project provides Kubernetes-based scripts for AI large language model (LLM) operations, including model downloading, inference service deployment, and performance benchmarking, enabling end-to-end AI workflows on Tencent Kubernetes Engine (TKE).
-"
+description_en = "This project provides Kubernetes-based scripts for AI large language model (LLM) operations, including model downloading, inference service deployment, and performance benchmarking, enabling end-to-end AI workflows on Tencent Kubernetes Engine (TKE)."
 class_en = "TKE"
 tag_en = ["AI"]
