@@ -4,16 +4,19 @@
 TKE NginxIngress 扩展组件已不再支持 TKE 1.30 及以上版本。若需升级集群版本至 1.30 或更高，需移除低版本集群中的 TKE NginxIngress 扩展组件，并切换至社区版 Ingress-nginx。
 
 为了实现现网流量的无损切换，本文档针对这一升级场景，整理了已验证的具体操作步骤，帮助用户部署自建社区Ingress-nginx，顺利完成 TKE NginxIngress 的切换升级，确保业务流量平稳过渡。
-![img.png](img.png)
+```mermaid
+graph LR
+    User(用户) --> DNS(DNS)
+    DNS -->|a.com| TKE_Nginx(TKE Nginx Ingress controller) -->|old ingressClass| workload 
+    DNS -->|a.com| Ingress_Nginx(Ingress-Nginx controller self-hosted) -->|new ingressClass| workload
+
+```
 ## 切换升级方案
 
 ### 方案一（推荐）
 官方推荐的最稳健方式：在同一集群内分别部署新旧两个版本的 Nginx controller 控制器。两个版本独立运行（包括独立的 IngressClass、Service 和 Pod 等资源）。切换时通过修改域名解析至新入口地址，实现平滑迁移。
 
-### 方案二（不推荐）
-直接滚动升级 TKE NginxIngress Controller 的镜像版本。此方式操作简单，但依赖环境兼容性，尤其是跨高版本升级可能引入未预期的变更，现网切换风险较高。
-
-### 方案三（非标方案）
+### 方案二（非标方案）
 使用社区版 Ingress-nginx Helm Chart 安装新版控制器，沿用旧版本的 IngressClass（如 `tke-nginx` 或自定义类名），并直接关联旧版本业务 Service 的端口和选择器。新旧控制器并行运行，通过负载均衡器或 DNS 按比例分发流量，观察业务稳定性（如错误率、响应延迟）。确认新版稳定后，删除旧版控制器相关资源。
 
 ## 迁移指南
