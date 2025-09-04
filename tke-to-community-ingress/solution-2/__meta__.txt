@@ -1,11 +1,11 @@
-title = '2TKE NginxIngress 插件迁移至自建 Nginx Ingress'
-description = '2实现从 TKE Nginx Ingress 插件到社区版 Nginx Ingress 的平滑迁移'
+title = '方案二：共享 IngressClass 方式迁移 TKE NginxIngress'
+description = '通过复用原有 IngressClass 实现 TKE NginxIngress 到社区版 Nginx Ingress 的迁移'
 class = "TKE"
 tag = ["TKE，Ingress"]
 draft = false
 
-title_en = 'Migrate the TKE NginxIngress plugin to a self-built Nginx Ingress'
-description_en = 'Achieve smooth migration from the TKE Nginx Ingress plugin to the community version of Nginx Ingress'
+title_en = 'Solution 2: Migrate TKE NginxIngress using Shared IngressClass'
+description_en = 'Migration from TKE NginxIngress to community Nginx Ingress by reusing existing IngressClass'
 class_en = "TKE"
 tag_en = ["TKE，Ingress"]
 draft = false
