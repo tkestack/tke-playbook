@@ -1,0 +1,34 @@
+apiVersion: karpenter.k8s.tke/v1beta1
+kind: TKEMachineNodeClass
+metadata:
+  name: default
+  annotations:
+    kubernetes.io/description: "General purpose TKEMachineNodeClass"
+spec:
+  ## using kubectl explain tmnc.spec.internetAccessible to check how to use internetAccessible filed.
+  # internetAccessible:
+  #   chargeType: TrafficPostpaidByHour
+  #   maxBandwidthOut: 2
+  ## using kubectl explain tmnc.spec.systemDisk to check how to use systemDisk filed.
+  # systemDisk:
+  #   size: 60
+  #   type: CloudSSD
+  ## using kubectl explain tmnc.spec.dataDisks to check how to use systemDisk filed.
+  # dataDisks:
+  # - mountTarget: /var/lib/container
+  #   size: 100
+  #   type: CloudPremium
+  #   fileSystem: ext4
+  subnetSelectorTerms:
+    # repalce your tag which is already existed in https://console.cloud.tencent.com/tag/taglist
+    - tags:
+        karpenter.sh/discovery: cls-xxx
+    # - id: subnet-xxx
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: cls-xxx
+    # - id: sg-xxx
+  sshKeySelectorTerms:
+    - tags:
+        karpenter.sh/discovery: cls-xxx
+    # - id: skey-xxx
