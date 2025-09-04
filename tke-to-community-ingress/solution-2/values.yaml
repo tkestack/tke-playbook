@@ -1,0 +1,28 @@
+controller:
+  name: new-controller  # 新的controller工作负载名称
+  
+  # 复用旧的ingress class name
+  ingressClass: test
+  
+  ingressClassResource:
+    name: test
+    enabled: false  # 不创建新的IngressClass
+  
+  # 设置发布服务为旧的服务
+  publishService:
+    enabled: true
+    pathOverride: "kube-system/test-ingress-nginx-controller"  # 旧的service路径
+  
+  # 确保服务配置正确
+  service:
+    type: LoadBalancer
+    annotations:
+      service.cloud.tencent.com/custom-weight: "100"  # 新controller权重值
+
+# 其他必要的配置
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name: nginx-service-account

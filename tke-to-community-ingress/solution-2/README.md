@@ -1,25 +1,25 @@
-# 方案一：独立 IngressClass 方式
+# 方案二：共享 IngressClass 方式
 
-本方案采用创建全新 IngressClass 的方式，实现新旧控制器的完全隔离。
+本方案采用复用原有 IngressClass 的方式，实现新旧控制器共享同一 IngressClass。
 
 ```mermaid
 graph LR
     User(用户) --> DNS(DNS)
     DNS -->|a.com| TKE_Nginx(TKE NginxIngress controller) -->|old ingressClass| workload 
-    DNS -->|a.com| Ingress_Nginx(Ingress-Nginx controller self-hosted) -->|new ingressClass| workload
+    DNS -->|a.com| Ingress_Nginx(Ingress-Nginx controller self-hosted) -->|old ingressClass| workload
 
 ```
 
 ### 方案特点
-- 创建全新的 IngressClass（如 `new-test`），与原有 TKE IngressClass 完全独立
-- 新旧控制器独立运行，互不影响
-- 通过 DNS 切换实现流量迁移
-- 迁移过程最为安全，回滚简单
+- 复用原有的 IngressClass（如 `test`），新旧控制器共享同一 IngressClass
+- 无需修改现有的 Ingress 资源
+- 通过权重调整实现流量切换
+- 配置相对复杂，需要精确控制
 
 ### 适用场景
-- 生产环境迁移
-- 对业务连续性要求极高的场景
-- 首次进行此类迁移的用户
+- 希望最小化配置变更的场景
+- 需要渐进式迁移的环境
+- 对 Ingress 资源数量较多且不便于逐个修改的情况
 
 ### 前提条件
 - Kubernetes 版本 >= 1.14 且 <= 1.28
@@ -48,21 +48,44 @@ graph LR
 
 ```yaml
 controller:
-  ingressClass: new-test # 新 IngressClass 名称，避免与现有 TKE 组件冲突
+  name: new-controller  # 新的controller工作负载名称
+
+  # 复用旧的ingress class name
+  ingressClass: test
+
   ingressClassResource:
-    name: new-test
+    name: test
+    enabled: false  # 不创建新的IngressClass
+
+  # 设置发布服务为旧的服务
+  publishService:
     enabled: true
-    controllerValue: k8s.io/new-test
-  scope:  
-    enabled: true
-    namespace: "ingress-nginx" # Nginx Controller监听处理指定命名空间下的Ingress资源 (可选)
+    pathOverride: "kube-system/test-ingress-nginx-controller"  # 旧的service路径
+
+  # 确保服务配置正确
+  service:
+    type: LoadBalancer
+    annotations:
+      service.cloud.tencent.com/custom-weight: "100"  # 新controller权重值
+
+# 其他必要的配置
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name: nginx-service-account
+
 ```
 
 
 配置说明：
-- `ingressClass: new-test` - 指定新的 IngressClass 名称为 `new-test`，与 TKE 组件的 `test` 区分开来，避免冲突
-- `name: new-test` - 创建名为 `new-test` 的 IngressClass 资源
-- `controllerValue: k8s.io/new-test` - 设置控制器标识，确保新 Ingress 规则能被正确路由到新的控制器实例
+- `controller.name: new-controller` - 新的controller工作负载名称，不能与老的相同
+- `ingressClass: test` - 指定 IngressClass 名称为 `test`，与 TKE 组件的 IngressClass 名称相同
+- `ingressClassResource.name: test` - IngressClass 资源的名称
+- `ingressClassResource.enabled: false` - 禁用IngressClass资源的创建，确保新的 controller 复用现有的 IngressClass
+- `publishService.pathOverride: kube-system/test-ingress-nginx-controller` - 设置发布服务为旧的服务路径
+- `service.cloud.tencent.com/custom-weight: "100"` - 新controller权重值，将100%流量导向新controller
 
 该脚本将完成：
 
@@ -70,10 +93,9 @@ controller:
 - 自动安装 Helm 并配置 ingress-nginx 官方仓库
 - 检测当前 TKE NginxIngress 的镜像版本
 - 根据镜像版本匹配对应的 Helm Chart 版本
-- 使用 Helm 部署社区版 ingress-nginx，配置独立的 IngressClass
-- 复制现有 Ingress 配置并修改 IngressClass 为 new-test
-- 创建新的 Ingress 规则，实现新旧版本并存
-- 验证新旧 Ingress 配置是否都正常工作
+- 使用 Helm 部署社区版 ingress-nginx，配置与 TKE NginxIngress 相同的 IngressClass
+- 直接使用现有 Ingress 配置，使其同时与新旧 controller 关联
+- 验证 Ingress 配置是否正常工作
 - 测试新 Ingress 暴露的业务是否可以正常访问
 #### 验证新自建ingress-nginx的访问结果
 ````
