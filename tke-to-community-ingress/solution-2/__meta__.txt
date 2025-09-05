@@ -1,4 +1,4 @@
-title = '方案二：共享 IngressClass 方式迁移 TKE NginxIngress'
+title = '方案二：共享 TKE NginxIngress 组件迁移到自建 Ingress-nginx'
 description = '通过复用原有 IngressClass 实现 TKE NginxIngress 到社区版 Nginx Ingress 的迁移'
 class = "TKE"
 tag = ["TKE，Ingress"]

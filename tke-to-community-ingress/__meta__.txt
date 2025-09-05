@@ -1,0 +1,11 @@
+title = 'TKE NginxIngress 组件迁移到自建 Ingress-nginx'
+description = '通过两种方法实现 TKE NginxIngress 到社区版 Nginx Ingress 的安全迁移'
+class = "TKE"
+tag = ["TKE，Ingress"]
+draft = false
+
+title_en = 'Migrate TKE NginxIngress components to self-built Ingress-nginx'
+description_en = 'Safely Migrate TKE Nginx Ingress to Community Edition Nginx Ingress Using Two Methods'
+class_en = "TKE"
+tag_en = ["TKE，Ingress"]
+draft = false
