@@ -1,11 +1,7 @@
 title = "部署 tke-karpenter PoC 环境"
 title_en = "Deploy tke-karpenter PoC environments"
-description = "
-部署 tke-karpenter PoC 环境。
-"
-description_en = "
-Deploy tke-karpenter PoC environments。
-"
+description = "部署 tke-karpenter PoC 环境。"
+description_en = "Deploy tke-karpenter PoC environments。"
 class = "TKE"
 tag = ["TKE, Karpenter"]
-draft = false%   
+draft = false
