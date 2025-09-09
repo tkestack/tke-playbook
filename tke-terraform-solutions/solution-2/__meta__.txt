@@ -1,0 +1,11 @@
+title = '创建 TKE 原生节点池'
+description = '通过Terraform创建TKE原生节点池，实现自动化节点资源部署'
+class = "TKE"
+tag = ["TKE", "Terraform", "Native Nodes", "Node Pool Creation"]
+draft = false
+
+title_en = 'Create TKE Native Node Pool with Terraform'
+description_en = 'Create TKE native node pool through Terraform for automated node resource deployment'
+class_en = "TKE"
+tag_en = ["TKE", "Terraform", "Native Nodes", "Node Pool Creation"]
+draft = false

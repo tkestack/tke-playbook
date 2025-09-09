@@ -1,0 +1,11 @@
+title = '方案一：使用 Terraform 创建 TKE 集群'
+description = '通过Terraform自动化创建TKE集群，包括网络和集群资源配置'
+class = "TKE"
+tag = ["TKE", "Terraform", "Cluster Creation"]
+draft = false
+
+title_en = 'Solution 1: Create TKE Cluster with Terraform'
+description_en = 'Automated TKE cluster creation through Terraform, including network and cluster resource configuration'
+class_en = "TKE"
+tag_en = ["TKE", "Terraform", "Cluster Creation"]
+draft = false
