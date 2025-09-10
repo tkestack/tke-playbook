@@ -10,7 +10,7 @@ To achieve lossless traffic switching, this document provides two different migr
 ## Migration Solution Comparison
 
 ### Solution 1: Independent IngressClass Approach (Recommended)
-- **Directory**: [solution-1](./solution-1/)
+- **Directory**: [tke-migrate-to-community-ingress](./tke-migrate-to-community-ingress/)
 - **Core Idea**: Create a completely new IngressClass, fully independent from the original TKE IngressClass
 - **Features**:
   - Complete isolation between new and old controllers, no mutual interference
@@ -19,7 +19,7 @@ To achieve lossless traffic switching, this document provides two different migr
   - Suitable for production environments with extremely high stability requirements
 
 ### Solution 2: Shared IngressClass Approach
-- **Directory**: [solution-2](./solution-2/)
+- **Directory**: [tke-install-community-ingress](./tke-install-community-ingress/)
 - **Core Idea**: Reuse the original IngressClass, with new and old controllers sharing the same IngressClass
 - **Features**:
   - No need to modify existing Ingress resources
@@ -90,13 +90,13 @@ Regardless of which solution is chosen, the basic implementation steps are simil
 ## Directory Structure
 ```
 tke-to-community-ingress/
-├── solution-1/           # Solution 1: Independent IngressClass Approach
+├── tke-migrate-to-community-ingress/           # Solution 1: Independent IngressClass Approach
 │   ├── README.md         # Detailed instructions for Solution 1
 │   ├── values.yaml       # Helm configuration file
 │   ├── install-tke-ingress.sh     # Script to deploy TKE Ingress
 │   ├── install-community-ingress.sh  # Script to deploy community Ingress
 │   └── migrate.sh        # Migration script
-└── solution-2/           # Solution 2: Shared IngressClass Approach
+└── tke-install-community-ingress/           # Solution 2: Shared IngressClass Approach
     ├── README.md         # Detailed instructions for Solution 2
     ├── values.yaml       # Helm configuration file
     ├── install-tke-ingress.sh     # Script to deploy TKE Ingress
