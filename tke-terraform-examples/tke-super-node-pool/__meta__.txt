@@ -1,0 +1,11 @@
+title = '方案三：使用 Terraform 管理 TKE 超级节点'
+description = '通过Terraform自动化管理TKE超级节点，实现弹性计算资源的快速部署'
+class = "TKE"
+tag = ["TKE", "Terraform", "Super Nodes", "Elastic Computing"]
+draft = false
+
+title_en = 'Solution 3: Manage TKE Super Nodes with Terraform'
+description_en = 'Automated management of TKE super nodes through Terraform for rapid deployment of elastic computing resources'
+class_en = "TKE"
+tag_en = ["TKE", "Terraform", "Super Nodes", "Elastic Computing"]
+draft = false

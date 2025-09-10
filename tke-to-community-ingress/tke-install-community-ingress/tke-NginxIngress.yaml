@@ -1,0 +1,33 @@
+apiVersion: cloud.tencent.com/v1alpha1
+kind: NginxIngress
+metadata:
+  name: test
+spec:
+  ingressClass: test
+  service:
+    annotation:
+      service.kubernetes.io/service.extensiveParameters: '{"AddressIPVersion":"IPV4","InternetAccessible":{"InternetChargeType":"TRAFFIC_POSTPAID_BY_HOUR","InternetMaxBandwidthOut":10}}'
+    directAccess: true
+    type: LoadBalancer
+  workLoad:
+    hpa:
+      enable: true
+      maxReplicas: 2
+      metrics:
+        - pods:
+            metricName: k8s_pod_rate_cpu_core_used_limit
+            targetAverageValue: "80"
+          type: Pods
+      minReplicas: 1
+    template:
+      affinity: {}
+      container:
+        image: hkccr.ccs.tencentyun.com/tkeimages/nginx-ingress-controller:v1.9.5
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: 1024Mi
+          requests:
+            cpu: "0.25"
+            memory: 256Mi
+    type: deployment

@@ -1,0 +1,11 @@
+title = 'TKE Terraform 解决方案'
+description = '通过Terraform实现TKE集群、原生节点和超级节点的全生命周期管理'
+class = "TKE"
+tag = ["TKE", "Terraform", "Native Nodes", "Cluster Management", "Super Nodes"]
+draft = false
+
+title_en = 'TKE Terraform Solutions'
+description_en = 'Full lifecycle management of TKE clusters, native nodes, and super nodes through Terraform'
+class_en = "TKE"
+tag_en = ["TKE", "Terraform", "Native Nodes", "Cluster Management", "Super Nodes"]
+draft = false

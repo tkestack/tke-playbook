@@ -1,0 +1,27 @@
+title = "Kubernetes故障演练Playbooks指南"
+title_en = "Kubernetes Chaos Testing Playbooks Guide"
+description = "
+K8s中心化架构与声明式管理虽提升运维效率，却因链式故障风险威胁集群稳定性，具体表现为：  
+• 级联删除风险：误删namespace可能连带删除核心业务资源（如workload、Pod），导致业务中断。  
+
+• 控制面过载隐患：第三方组件（如DaemonSet监控）可能引发控制面故障，依赖控制面的组件（如coredns、Flink）连锁失效，造成数据面崩溃。  
+
+• 架构脆弱性传导：单点组件异常（如kube-apiserver中断）可通过依赖链引发全局故障，放大故障影响范围。  
+
+为应对上述风险，需通过故障演练提前验证系统韧性，覆盖节点故障、资源误操作、控制面过载等场景，降低故障爆炸半径，保障业务连续性。
+"
+description_en = "
+Kubernetes' centralized architecture and declarative management model, while enabling efficient operations, also introduce critical risks of cascading failures. The open ecosystem (with third-party components like Flink and Rancher) and complex multi-service environments further exacerbate these risks:
+
+Cascading deletion disaster: A customer using Rancher to manage Kubernetes clusters accidentally deleted a namespace, which subsequently deleted all core business workloads and Pods in the production cluster, causing service interruption.
+Control plane overload: In a large OpenAI cluster, deploying a DaemonSet monitoring component triggered control plane failures and coredns overload. The coredns scaling depended on control plane recovery, affecting the data plane and causing global OpenAI service disruption.
+Data plane's strong dependency on control plane: In open-source Flink on Kubernetes scenarios, kube-apiserver disruption may cause Flink task checkpoint failures and leader election anomalies. In severe cases, it may trigger abnormal exits of all existing task Pods, leading to complete data plane collapse and major incidents.
+These cases are not uncommon. The root cause lies in Kubernetes' architecture vulnerability chain - a single component failure or incorrect command can trigger global failures through centralized pathways.
+
+To proactively understand the impact duration and severity of control plane failures on services, we should conduct regular fault simulation and assessments to improve failure response capabilities, ensuring Kubernetes environment stability and reliability.
+
+This project provides Kubernetes chaos testing capabilities covering scenarios like node shutdown, accidental resource deletion, and control plane component (etcd, kube-apiserver, coredns, etc.) overload/disruption, it will help you minimize blast radius of cluster failures.
+"
+class = "TKE"
+tag = ["HA, disaster recovery"]
+draft = false

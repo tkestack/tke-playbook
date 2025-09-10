@@ -1,0 +1,11 @@
+title = '基于污点和容忍机制的TKE跨AZ混合节点架构'
+description = '通过Terraform实现TKE集群的智能节点调度架构，核心系统addon部署在跨AZ的超级节点上，业务应用部署在原生节点池，支持突发流量快速扩展'
+class = "TKE"
+tag = ["TKE", "Terraform", "Cluster Creation", "Hybrid Architecture", "Taints and Tolerations", "Node Scheduling", "Cross-AZ"]
+draft = false
+
+title_en = 'TKE Cross-AZ Hybrid Node Architecture Based on Taints and Tolerations'
+description_en = 'Implementing an intelligent node scheduling architecture for TKE clusters through Terraform, with core system addons deployed on cross-AZ super nodes and business applications on native node pools, supporting rapid scaling during traffic spikes'
+class_en = "TKE"
+tag_en = ["TKE", "Terraform", "Cluster Creation", "Hybrid Architecture", "Taints and Tolerations", "Node Scheduling", "Cross-AZ"]
+draft = false
