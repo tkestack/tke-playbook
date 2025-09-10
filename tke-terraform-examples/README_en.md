@@ -10,15 +10,42 @@ This guide provides comprehensive solutions for managing TKE clusters, native no
 
 | Solution | Description |
 |----------|-------------|
-| [tke-cluster-with-nodes: Create TKE Cluster (Native Nodes + Super Nodes)](./tke-cluster-with-nodes) | Create a TKE cluster using Terraform, along with native node pool and super nodes |
+| [tke-hybrid-cluster: Create TKE Cluster (Native Nodes + Super Nodes)](./tke-hybrid-cluster) | Create a TKE cluster using Terraform, along with native node pool and super nodes |
 | [tke-native-node-pool: Create TKE Native Node Cluster](./tke-native-node-pool) | Create a complete TKE cluster and add native node pools using Terraform |
 | [tke-super-node-pool: Create TKE Super Node Cluster](./tke-super-node-pool) | Create a complete TKE cluster and add super nodes using Terraform |
 
 ## Prerequisites
 
 1. Install Terraform (recommended version 1.0+)
-2. Obtain Tencent Cloud access credentials (SecretId and SecretKey)
-3. Configure Tencent Cloud credentials:
+   
+   ### macOS (using Homebrew)
+   ```bash
+   brew tap hashicorp/tap
+   brew install hashicorp/tap/terraform
+   ```
+   
+   ### Windows (using Chocolatey)
+   ```powershell
+   choco install terraform
+   ```
+   
+   ### Linux (Ubuntu/Debian)
+   ```bash
+   wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+   echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+   sudo apt update && sudo apt install terraform
+   ```
+   
+   ### Other platforms
+   Visit the [Terraform download page](https://www.terraform.io/downloads) to download the version suitable for your system.
+
+2. Verify the installation
+   ```bash
+   terraform version
+   ```
+
+3. Obtain Tencent Cloud access credentials (SecretId and SecretKey)
+4. Configure Tencent Cloud credentials:
    ```bash
    export TENCENTCLOUD_SECRET_ID=your_secret_id
    export TENCENTCLOUD_SECRET_KEY=your_secret_key
@@ -30,7 +57,7 @@ This guide provides comprehensive solutions for managing TKE clusters, native no
 1. Select the solution directory that fits your needs
 2. Navigate to the corresponding directory and initialize Terraform:
    ```bash
-   cd solution-X
+   cd tke-hybrid-cluster
    terraform init
    ```
 3. Review the execution plan:

@@ -2,8 +2,6 @@
 resource "tencentcloud_vpc" "this" {
   name         = var.vpc_name
   cidr_block   = var.vpc_cidr
-  dns_servers  = ["8.8.8.8", "114.114.114.114"]
-  is_multicast = false
 }
 
 # 创建子网
@@ -12,7 +10,6 @@ resource "tencentcloud_subnet" "this" {
   vpc_id            = tencentcloud_vpc.this.id
   availability_zone = var.availability_zone
   cidr_block        = var.subnet_cidr
-  is_multicast      = false
 }
 
 # 创建安全组
@@ -45,17 +42,17 @@ resource "tencentcloud_security_group_rule" "icmp" {
 resource "tencentcloud_kubernetes_cluster" "this" {
   vpc_id                     = tencentcloud_vpc.this.id
   cluster_cidr               = var.service_cidr
-  cluster_max_pod_num        = 32
+  cluster_max_pod_num        = 256
   cluster_name               = var.cluster_name
-  cluster_desc               = "TKE cluster with native nodes created by Terraform"
-  cluster_max_service_num    = 32
+  cluster_desc               = "TKE cluster with native nodes and super nodes created by Terraform"
+  cluster_max_service_num    = 1024
   cluster_version            = var.cluster_version
-  cluster_os                 = "tlinux2.2(tkernel3)x86_64"
   cluster_level              = "L5"
   auto_upgrade_cluster_level = true
-  network_type               = "GR"
-  cluster_internet           = false
-  cluster_intranet           = false
+  network_type               = "VPC-CNI"
+  cluster_internet           = true
+  cluster_intranet           = true
+  eni_subnet_ids             = [for subnet in tencentcloud_subnet.subnets : subnet.id]
 }
 
 # 创建TKE原生节点池
@@ -64,7 +61,7 @@ resource "tencentcloud_kubernetes_native_node_pool" "kubernetes_native_node_pool
   cluster_id          = tencentcloud_kubernetes_cluster.this.id
   type                = "Native"
   unschedulable       = false
-  deletion_protection = true
+  deletion_protection = false
   labels {
     name  = "workload-type"
     value = "stable"
@@ -74,7 +71,7 @@ resource "tencentcloud_kubernetes_native_node_pool" "kubernetes_native_node_pool
     instance_charge_type = "POSTPAID_BY_HOUR"
     instance_types       = [var.instance_type]
     security_group_ids   = [tencentcloud_security_group.this.id]
-    subnet_ids           = [tencentcloud_subnet.this.id]
+    subnet_ids           = [for subnet in tencentcloud_subnet.subnets : subnet.id]
     
     replicas             = var.node_count
     machine_type         = "Native"
@@ -97,22 +94,6 @@ resource "tencentcloud_kubernetes_native_node_pool" "kubernetes_native_node_pool
       file_system           = "ext4"
       mount_target          = "/var/lib/container"
     }
-    
-    # 移除可能导致问题的复杂配置
-    # auto_repair              = true
-    # health_check_policy_name = null
-    # enable_autoscaling = false
-    # host_name_pattern  = null
-    # management {
-    #   nameservers = ["183.60.83.19", "183.60.82.98"]
-    #   kernel_args = ["kernel.pid_max=65535", "fs.file-max=400000"]
-    # }
-    # kubelet_args = ["allowed-unsafe-sysctls=net.core.somaxconn"]
-    # lifecycle {
-    #   pre_init  = "ZWNobyBoZWxsb3dvcmxk"
-    #   post_init = "ZWNobyBoZWxsb3dvcmxk"
-    # }
-    # runtime_root_dir = "/var/lib/containerd"
   }
   
   lifecycle {
@@ -120,6 +101,29 @@ resource "tencentcloud_kubernetes_native_node_pool" "kubernetes_native_node_pool
       native[0].instance_types,
       native[0].system_disk
     ]
+  }
+}
+
+# 创建TKE超级节点
+resource "tencentcloud_kubernetes_serverless_node_pool" "this" {
+  cluster_id = tencentcloud_kubernetes_cluster.this.id
+  name       = var.super_node_name
+  security_group_ids = [tencentcloud_security_group.this.id]
+  
+  # 主可用区节点
+  serverless_nodes {
+    display_name = "super-node-1"
+    subnet_id    = tencentcloud_subnet.subnets["primary"].id
+  }
+  
+  # 备用可用区节点
+  serverless_nodes {
+    display_name = "super-node-2"
+    subnet_id    = tencentcloud_subnet.subnets["secondary"].id
+  }
+  
+  labels = {
+    "super-node" : "true"
   }
 }
 
@@ -133,6 +137,16 @@ output "cluster_id" {
   value = tencentcloud_kubernetes_cluster.this.id
 }
 
-output "nodepool_id" {
+# 输出原生节点池信息
+output "native_nodepool_id" {
   value = tencentcloud_kubernetes_native_node_pool.kubernetes_native_node_pool.id
+}
+
+# 输出超级节点信息
+output "super_node_id" {
+  value = tencentcloud_kubernetes_serverless_node_pool.this.id
+}
+
+output "super_node_status" {
+  value = tencentcloud_kubernetes_serverless_node_pool.this.life_state
 }

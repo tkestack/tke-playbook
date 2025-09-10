@@ -1,10 +1,10 @@
-# Solution 1: Create TKE Cluster (Native Nodes + Super Nodes)
+# Create TKE Cluster (Native Nodes + Super Nodes)
 
 [中文版本](./README.md)
 
 ## Overview
 
-This solution demonstrates how to create a TKE cluster using Terraform, along with native node pool and super nodes.
+This solution demonstrates how to create a TKE cluster using Terraform, along with native node pool and super nodes. This solution has been optimized to use the latest OS version, improved network configuration, and simplified node configuration.
 
 ## File Description
 

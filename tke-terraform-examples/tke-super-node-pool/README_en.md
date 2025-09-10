@@ -1,15 +1,15 @@
-# TKE Native Node Pool Solution
+# TKE Super Node Pool Solution
 
 [中文版本](./README.md)
 
-This solution demonstrates how to create a Tencent Kubernetes Engine (TKE) cluster with native node pools using Terraform.
+This solution demonstrates how to create a Tencent Kubernetes Engine (TKE) cluster with serverless super node pools using Terraform. This solution has been optimized to use the latest OS version, improved network configuration, and simplified node configuration.
 
 ## Features
 
 - Creates a VPC and subnet for the TKE cluster
 - Configures security groups with essential rules (SSH, ICMP)
 - Deploys a managed TKE cluster
-- Sets up native node pools with autoscaling capabilities
+- Sets up serverless super node pools for cost-effective scaling
 - Provides outputs for cluster access information
 
 ## Prerequisites
@@ -49,7 +49,14 @@ This solution creates the following resources:
 2. **Subnet**: A subnet within the VPC for cluster resources
 3. **Security Group**: Network access control for cluster nodes
 4. **TKE Cluster**: Managed Kubernetes cluster
-5. **Native Node Pool**: Scalable worker nodes for running workloads
+5. **Serverless Super Node Pool**: Serverless nodes for running workloads without managing underlying infrastructure
+
+## Benefits of Super Nodes
+
+- **Cost-effective**: Pay only for the resources your workloads consume
+- **Scalable**: Automatically scale based on workload demands
+- **Maintenance-free**: No need to manage underlying VMs
+- **High Performance**: Optimized for containerized workloads
 
 ## Customization
 
@@ -62,8 +69,7 @@ You can customize the deployment by modifying the variables in `variables.tf`:
 - `availability_zone`: Availability zone for resources
 - `cluster_name`: Name of the TKE cluster
 - `cluster_version`: Kubernetes version
-- `nodepool_name`: Name of the node pool
-- `node_count`: Initial number of nodes
+- `super_node_name`: Name of the super node pool
 - `instance_type`: Node instance type
 
 ## Cleanup
