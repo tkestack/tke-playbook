@@ -1,0 +1,100 @@
+variable "region" {
+  description = "区域"
+  default     = "ap-singapore"
+}
+
+variable "tencentcloud_secret_id" {
+  description = "腾讯云SecretId"
+  type        = string
+  sensitive   = true
+}
+
+variable "tencentcloud_secret_key" {
+  description = "腾讯云SecretKey"
+  type        = string
+  sensitive   = true
+}
+
+variable "vpc_name" {
+  description = "VPC名称"
+  default     = "terraform-test-vpc"
+}
+
+variable "vpc_cidr" {
+  description = "VPC CIDR"
+  default     = "172.18.0.0/16"
+}
+
+variable "subnet_name" {
+  description = "子网名称"
+  default     = "terraform-test-subnet"
+}
+
+variable "availability_zones" {
+  description = "可用区列表"
+  type        = list(string)
+  default     = ["ap-singapore-1", "ap-singapore-2", "ap-singapore-3"]
+}
+
+variable "subnet_cidr" {
+  description = "子网CIDR"
+  default     = "172.18.100.0/24"
+}
+
+variable "cluster_name" {
+  description = "TKE集群名称"
+  default     = "terraform-test-cluster"
+}
+
+variable "cluster_version" {
+  description = "Kubernetes版本"
+  default     = "1.32.2"
+}
+
+variable "service_cidr" {
+  description = "Kubernetes服务CIDR"
+  default     = "10.200.0.0/22"
+}
+
+variable "cluster_id" {
+  description = "TKE集群ID"
+  type        = string
+  default     = ""
+}
+
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_id" {
+  description = "子网ID"
+  type        = string
+  default     = ""
+}
+
+variable "nodepool_name" {
+  description = "节点池名称"
+  default     = "terraform-node-pool"
+}
+
+variable "node_count" {
+  description = "节点数量"
+  default     = 1
+}
+
+variable "instance_type" {
+  description = "实例类型"
+  default     = "S5.MEDIUM4"
+}
+
+variable "super_node_name" {
+  description = "超级节点名称"
+  default     = "terraform-super-node"
+}
+
+variable "system_disk_size" {
+  description = "系统磁盘大小（GB）"
+  default     = 60
+}
