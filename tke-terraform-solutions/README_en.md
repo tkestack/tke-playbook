@@ -10,9 +10,9 @@ This guide provides comprehensive solutions for managing TKE clusters, native no
 
 | Solution | Description |
 |----------|-------------|
-| [solution-1: Create TKE Cluster](./solution-1) | Create a TKE cluster using Terraform |
-| [solution-2: Create TKE Native Node Cluster](./solution-2) | Create a complete TKE cluster and add native node pools using Terraform |
-| [solution-3: Create TKE Super Node Cluster](./solution-3) | Create a complete TKE cluster and add super nodes using Terraform |
+| [tke-cluster-with-nodes: Create TKE Cluster (Native Nodes + Super Nodes)](./tke-cluster-with-nodes) | Create a TKE cluster using Terraform, along with native node pool and super nodes |
+| [tke-native-node-pool: Create TKE Native Node Cluster](./tke-native-node-pool) | Create a complete TKE cluster and add native node pools using Terraform |
+| [tke-super-node-pool: Create TKE Super Node Cluster](./tke-super-node-pool) | Create a complete TKE cluster and add super nodes using Terraform |
 
 ## Prerequisites
 

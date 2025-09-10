@@ -10,9 +10,9 @@
 
 | 方案 | 描述 |
 |------|------|
-| [solution-1: 创建 TKE 集群](./solution-1) | 使用 Terraform 创建 TKE 集群 |
-| [solution-2: 创建 TKE 原生节点集群](./solution-2) | 使用 Terraform 创建完整的 TKE 集群并添加原生节点池 |
-| [solution-3: 创建 TKE 超级节点集群](./solution-3) | 使用 Terraform 创建完整的 TKE 集群并添加超级节点 |
+| [tke-cluster-with-nodes: 创建 TKE 集群（原生节点 + 超级节点）](./tke-cluster-with-nodes) | 使用 Terraform 创建 TKE 集群，并同时创建原生节点池和超级节点 |
+| [tke-native-node-pool: 创建 TKE 原生节点集群](./tke-native-node-pool) | 使用 Terraform 创建完整的 TKE 集群并添加原生节点池 |
+| [tke-super-node-pool: 创建 TKE 超级节点集群](./tke-super-node-pool) | 使用 Terraform 创建完整的 TKE 集群并添加超级节点 |
 
 ## 准备工作
 
