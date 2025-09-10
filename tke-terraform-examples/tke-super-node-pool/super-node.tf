@@ -4,14 +4,12 @@ resource "tencentcloud_vpc" "this" {
   cidr_block   = var.vpc_cidr
 }
 
-# 创建多个子网以支持多可用区部署
-resource "tencentcloud_subnet" "subnets" {
-  for_each = var.subnets
-
-  name              = "subnet-${each.key}"
+# 创建子网
+resource "tencentcloud_subnet" "this" {
+  name              = var.subnet_name
   vpc_id            = tencentcloud_vpc.this.id
-  cidr_block        = each.value.cidr
-  availability_zone = each.value.az
+  availability_zone = var.availability_zone
+  cidr_block        = var.subnet_cidr
 }
 
 # 安全组
@@ -71,7 +69,7 @@ resource "tencentcloud_security_group_rule_set" "rules" {
 # 创建TKE集群（无工作节点）
 resource "tencentcloud_kubernetes_cluster" "this" {
   vpc_id                     = tencentcloud_vpc.this.id
-  cluster_cidr               = var.service_cidr
+  service_cidr               = var.service_cidr
   cluster_max_pod_num        = 256
   cluster_name               = var.cluster_name
   cluster_desc               = "TKE cluster with super nodes created by Terraform"
@@ -80,9 +78,19 @@ resource "tencentcloud_kubernetes_cluster" "this" {
   cluster_level              = "L5"
   auto_upgrade_cluster_level = true
   network_type               = "VPC-CNI"
-  cluster_internet           = true
-  cluster_intranet           = true
-  eni_subnet_ids             = [for subnet in tencentcloud_subnet.subnets : subnet.id]
+  eni_subnet_ids             = [tencentcloud_subnet.this.id]
+}
+
+# 配置集群端点（内网访问）
+resource "tencentcloud_kubernetes_cluster_endpoint" "cluster_endpoint" {
+  cluster_id              = tencentcloud_kubernetes_cluster.this.id
+  cluster_intranet        = true
+  cluster_intranet_subnet_id = tencentcloud_subnet.this.id
+  
+  depends_on = [
+    tencentcloud_kubernetes_cluster.this,
+    tencentcloud_kubernetes_serverless_node_pool.this
+  ]
 }
 
 # 创建TKE超级节点
@@ -91,16 +99,10 @@ resource "tencentcloud_kubernetes_serverless_node_pool" "this" {
   name       = var.super_node_name
   security_group_ids = [tencentcloud_security_group.this.id]
   
-  # 主可用区节点
+  # 超级节点
   serverless_nodes {
-    display_name = "super-node-1"
-    subnet_id    = tencentcloud_subnet.subnets["primary"].id
-  }
-  
-  # 备用可用区节点
-  serverless_nodes {
-    display_name = "super-node-2"
-    subnet_id    = tencentcloud_subnet.subnets["secondary"].id
+    display_name = "super-node"
+    subnet_id    = tencentcloud_subnet.this.id
   }
   
   labels = {

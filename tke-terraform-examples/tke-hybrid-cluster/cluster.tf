@@ -12,36 +12,64 @@ resource "tencentcloud_subnet" "this" {
   cidr_block        = var.subnet_cidr
 }
 
-# 创建安全组
+# 安全组
 resource "tencentcloud_security_group" "this" {
   name        = "terraform-security-group"
   description = "Security group for TKE cluster created by Terraform"
   project_id  = 0
 }
 
-# 创建安全组规则 - 允许SSH访问
-resource "tencentcloud_security_group_rule" "ssh" {
+# 安全组规则集
+resource "tencentcloud_security_group_rule_set" "rules" {
   security_group_id = tencentcloud_security_group.this.id
-  type              = "ingress"
-  cidr_ip           = "0.0.0.0/0"
-  ip_protocol       = "tcp"
-  port_range        = "22"
-  policy            = "accept"
-}
 
-# 创建安全组规则 - 允许ICMP
-resource "tencentcloud_security_group_rule" "icmp" {
-  security_group_id = tencentcloud_security_group.this.id
-  type              = "ingress"
-  cidr_ip           = "0.0.0.0/0"
-  ip_protocol       = "icmp"
-  policy            = "accept"
+  # 允许SSH访问
+  ingress {
+    action      = "ACCEPT"
+    cidr_block  = "0.0.0.0/0"
+    protocol    = "TCP"
+    port        = "22"
+    description = "SSH Access"
+  }
+
+  # 允许ICMP
+  ingress {
+    action      = "ACCEPT"
+    cidr_block  = "0.0.0.0/0"
+    protocol    = "ICMP"
+    description = "ICMP Access"
+  }
+
+  # 允许API Server访问
+  ingress {
+    action      = "ACCEPT"
+    cidr_block  = "0.0.0.0/0"
+    protocol    = "TCP"
+    port        = "6443"
+    description = "Kubernetes API Access"
+  }
+
+  # 允许VPC内部通信
+  ingress {
+    action      = "ACCEPT"
+    cidr_block  = var.vpc_cidr
+    protocol    = "ALL"
+    description = "Node-to-Node Communication"
+  }
+
+  # 允许所有出站流量
+  egress {
+    action      = "ACCEPT"
+    cidr_block  = "0.0.0.0/0"
+    protocol    = "ALL"
+    description = "All Outbound"
+  }
 }
 
 # 创建TKE集群（无工作节点）
 resource "tencentcloud_kubernetes_cluster" "this" {
   vpc_id                     = tencentcloud_vpc.this.id
-  cluster_cidr               = var.service_cidr
+  service_cidr               = var.service_cidr
   cluster_max_pod_num        = 256
   cluster_name               = var.cluster_name
   cluster_desc               = "TKE cluster with native nodes and super nodes created by Terraform"
@@ -50,9 +78,7 @@ resource "tencentcloud_kubernetes_cluster" "this" {
   cluster_level              = "L5"
   auto_upgrade_cluster_level = true
   network_type               = "VPC-CNI"
-  cluster_internet           = true
-  cluster_intranet           = true
-  eni_subnet_ids             = [for subnet in tencentcloud_subnet.subnets : subnet.id]
+  eni_subnet_ids             = [tencentcloud_subnet.this.id]
 }
 
 # 创建TKE原生节点池
@@ -71,7 +97,7 @@ resource "tencentcloud_kubernetes_native_node_pool" "kubernetes_native_node_pool
     instance_charge_type = "POSTPAID_BY_HOUR"
     instance_types       = [var.instance_type]
     security_group_ids   = [tencentcloud_security_group.this.id]
-    subnet_ids           = [for subnet in tencentcloud_subnet.subnets : subnet.id]
+    subnet_ids           = [tencentcloud_subnet.this.id]
     
     replicas             = var.node_count
     machine_type         = "Native"
@@ -110,21 +136,27 @@ resource "tencentcloud_kubernetes_serverless_node_pool" "this" {
   name       = var.super_node_name
   security_group_ids = [tencentcloud_security_group.this.id]
   
-  # 主可用区节点
+  # 超级节点
   serverless_nodes {
-    display_name = "super-node-1"
-    subnet_id    = tencentcloud_subnet.subnets["primary"].id
-  }
-  
-  # 备用可用区节点
-  serverless_nodes {
-    display_name = "super-node-2"
-    subnet_id    = tencentcloud_subnet.subnets["secondary"].id
+    display_name = "super-node"
+    subnet_id    = tencentcloud_subnet.this.id
   }
   
   labels = {
     "super-node" : "true"
   }
+}
+
+# 配置集群端点（内网访问）
+resource "tencentcloud_kubernetes_cluster_endpoint" "cluster_endpoint" {
+  cluster_id              = tencentcloud_kubernetes_cluster.this.id
+  cluster_intranet        = true
+  cluster_intranet_subnet_id = tencentcloud_subnet.this.id
+  
+  depends_on = [
+    tencentcloud_kubernetes_cluster.this,
+    tencentcloud_kubernetes_native_node_pool.kubernetes_native_node_pool
+  ]
 }
 
 # 输出集群访问信息

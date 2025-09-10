@@ -38,8 +38,8 @@ read -p "Please enter node pool name (default: terraform-node-pool): " NODEPOOL_
 NODEPOOL_NAME=${NODEPOOL_NAME:-"terraform-node-pool"}
 read -p "Please enter node count (default: 1): " NODE_COUNT
 NODE_COUNT=${NODE_COUNT:-1}
-read -p "Please enter instance type (default: SA2.SMALL2): " INSTANCE_TYPE
-INSTANCE_TYPE=${INSTANCE_TYPE:-"SA2.SMALL2"}
+read -p "Please enter instance type (default: S5.MEDIUM4): " INSTANCE_TYPE
+INSTANCE_TYPE=${INSTANCE_TYPE:-"S5.MEDIUM4"}
 
 echo "=== Starting TKE Native Node Cluster Deployment ==="
 

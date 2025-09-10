@@ -85,23 +85,5 @@ variable "node_count" {
 
 variable "instance_type" {
   description = "实例类型"
-  default     = "SA2.SMALL2"
-}
-
-variable "subnets" {
-  description = "子网配置"
-  type = map(object({
-    cidr = string
-    az   = string
-  }))
-  default = {
-    "primary" = {
-      cidr = "172.18.100.0/24"
-      az   = "ap-singapore-1"
-    }
-    "secondary" = {
-      cidr = "172.18.101.0/24"
-      az   = "ap-singapore-2"
-    }
-  }
+  default     = "S5.MEDIUM4"
 }
