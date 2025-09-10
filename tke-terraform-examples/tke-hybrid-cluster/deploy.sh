@@ -44,6 +44,8 @@ INSTANCE_TYPE=${INSTANCE_TYPE:-"S5.MEDIUM4"}
 read -p "请输入超级节点名称（默认: terraform-super-node）: " SUPER_NODE_NAME
 SUPER_NODE_NAME=${SUPER_NODE_NAME:-"terraform-super-node"}
 
+echo "=== Starting TKE Hybrid Cluster Deployment ==="
+
 terraform apply -auto-approve \
   -var="tencentcloud_secret_id=$TENCENTCLOUD_SECRET_ID" \
   -var="tencentcloud_secret_key=$TENCENTCLOUD_SECRET_KEY" \
