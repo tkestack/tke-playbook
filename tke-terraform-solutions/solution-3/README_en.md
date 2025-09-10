@@ -1,5 +1,7 @@
 # TKE Super Node Pool Solution
 
+[中文版本](./README.md)
+
 This solution demonstrates how to create a Tencent Kubernetes Engine (TKE) cluster with serverless super node pools using Terraform.
 
 ## Features

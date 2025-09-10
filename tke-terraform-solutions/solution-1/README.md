@@ -1,5 +1,7 @@
 # Solution 1: 创建 TKE 集群
 
+[English Version](./README_en.md)
+
 ## 概述
 
 本方案演示如何使用 Terraform 创建 TKE 集群。

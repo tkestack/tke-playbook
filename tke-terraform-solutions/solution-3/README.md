@@ -1,5 +1,7 @@
 # 创建 TKE 超级节点集群
 
+[English Version](./README_en.md)
+
 ## 概述
 
 通过Terraform工具创建完整的TKE集群并添加超级节点，涵盖环境初始化、集群创建、超级节点创建（执行terraform apply）及资源清理（执行terraform destroy）全流程，验证Terraform对TKE超级节点集群的自动化管理能力。

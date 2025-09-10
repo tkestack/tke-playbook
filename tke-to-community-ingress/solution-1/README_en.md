@@ -1,5 +1,7 @@
 # Solution 1: Independent IngressClass Approach
 
+[中文版本](./README.md)
+
 This solution creates a completely new IngressClass to achieve complete isolation between new and old controllers.
 
 ```mermaid

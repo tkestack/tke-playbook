@@ -1,5 +1,7 @@
 # TKE Playbook 仓库贡献指南
 
+[English Version](./README_en.md)
+
 欢迎来到 TKE Playbook 仓库！本文档将指导您如何向此仓库贡献内容。
 
 ## 仓库简介

@@ -1,5 +1,7 @@
 # TKE Native Node Pool Solution
 
+[中文版本](./README.md)
+
 This solution demonstrates how to create a Tencent Kubernetes Engine (TKE) cluster with native node pools using Terraform.
 
 ## Features

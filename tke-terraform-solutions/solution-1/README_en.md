@@ -1,5 +1,7 @@
 # Solution 1: Create TKE Cluster
 
+[中文版本](./README.md)
+
 ## Overview
 
 This solution demonstrates how to create a TKE (Tencent Kubernetes Engine) cluster using Terraform.

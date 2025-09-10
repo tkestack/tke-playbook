@@ -1,5 +1,7 @@
 # 方案一：独立 IngressClass 方式
 
+[English Version](./README_en.md)
+
 本方案采用创建全新 IngressClass 的方式，实现新旧控制器的完全隔离。
 
 ```mermaid

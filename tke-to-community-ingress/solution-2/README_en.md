@@ -1,5 +1,7 @@
 # Solution 2: Shared IngressClass Approach
 
+[中文版本](./README.md)
+
 This solution reuses the original IngressClass to enable both new and old controllers to share the same IngressClass.
 
 ```mermaid

@@ -1,5 +1,7 @@
 # 方案二：共享 IngressClass 方式
 
+[English Version](./README_en.md)
+
 本方案采用复用原有 IngressClass 的方式，实现新旧控制器共享同一 IngressClass。
 
 ```mermaid

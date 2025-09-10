@@ -1,5 +1,7 @@
 # TKE Terraform 解决方案
 
+[English Version](./README_en.md)
+
 ## 概述
 
 本指南提供了使用 Terraform 管理 TKE 集群、原生节点和超级节点的完整解决方案。通过本指南，您可以学习如何使用 Terraform 实现 Kubernetes 集群资源的全生命周期管理。

@@ -1,5 +1,7 @@
 # TKE NginxIngress 组件迁移到自建 Ingress-nginx 指南
 
+[English Version](./README_en.md)
+
 ## 背景
 TKE NginxIngress 扩展组件已不再支持 TKE 1.30 及以上版本。若需升级集群版本至 1.30 或更高，需移除低版本集群中的 TKE NginxIngress 扩展组件，并切换至社区版 Ingress-nginx。
 
