@@ -1,10 +1,10 @@
-# Create TKE Cluster (Native Nodes + Super Nodes)
+# TKE Cross-AZ Hybrid Node Architecture Practice (Based on Taints and Tolerations)
 
 [中文版本](./README.md)
 
 ## Overview
 
-This solution demonstrates how to create a TKE cluster using Terraform, implementing an intelligent node scheduling architecture based on taints and tolerations. This solution separates the deployment of core system components and business applications, achieving efficient resource utilization and flexible scaling capabilities:
+This solution implements best practices for TKE cross-AZ hybrid node architecture through taints and tolerations mechanism. The architecture leverages intelligent scheduling strategies to separate the deployment of core system components and business applications, maximizing the advantages of different node types and achieving efficient resource utilization and flexible scaling capabilities:
 
 - **Core System Addon Deployment**: System components such as CoreDNS and Metrics Server are deployed on super nodes by default, leveraging their cross-AZ features and high availability
 - **Business Application Deployment**: Business applications are deployed on native node pools with precise workload distribution control through toleration configurations
