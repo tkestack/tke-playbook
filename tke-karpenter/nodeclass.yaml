@@ -1,34 +1,44 @@
 apiVersion: karpenter.k8s.tke/v1beta1
 kind: TKEMachineNodeClass
 metadata:
-  name: default
+  name: default  # Must match nodeClassRef.name in NodePool (should be "default")
   annotations:
     kubernetes.io/description: "General purpose TKEMachineNodeClass"
 spec:
-  ## using kubectl explain tmnc.spec.internetAccessible to check how to use internetAccessible filed.
-  # internetAccessible:
-  #   chargeType: TrafficPostpaidByHour
-  #   maxBandwidthOut: 2
-  ## using kubectl explain tmnc.spec.systemDisk to check how to use systemDisk filed.
-  # systemDisk:
-  #   size: 60
-  #   type: CloudSSD
-  ## using kubectl explain tmnc.spec.dataDisks to check how to use systemDisk filed.
-  # dataDisks:
-  # - mountTarget: /var/lib/container
-  #   size: 100
-  #   type: CloudPremium
-  #   fileSystem: ext4
+  # Internet accessibility configuration (required for image pulling/debugging)
+  internetAccessible:
+    chargeType: TrafficPostpaidByHour  # Only postpaid bandwidth supported
+    maxBandwidthOut: 2  # 2Mbps sufficient for testing, avoids resource waste
+
+  # System disk configuration (required to avoid CloudBasic errors)
+  systemDisk:
+    size: 60  # 60GB sufficient for node initialization with space for logs/tools
+    type: CloudPremium  # Medium-high performance disk, balances performance and cost
+
+  # Data disk configuration (optional, for container storage)
+  dataDisks:
+  - mountTarget: /var/lib/containerd  # Mount to container runtime directory
+    size: 50  # 50GB sufficient for testing container storage needs
+    type: CloudPremium  # Same as system disk for consistent IO performance
+    fileSystem: ext4  # Linux-compatible filesystem, fully compatible with TKE
+
+  # Subnet selection (based on tags, requires pre-tagged subnets)
   subnetSelectorTerms:
-    # repalce your tag which is already existed in https://console.cloud.tencent.com/tag/taglist
     - tags:
-        karpenter.sh/discovery: cls-xxx
+        karpenter.sh/discovery: cls-${CLUSTER_ID}  # Replace with your TKE cluster ID
+    # Fallback: If tag matching fails, uncomment and use actual subnet ID
     # - id: subnet-xxx
+
+  # Security group selection (based on tags, requires pre-tagged security groups)
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: cls-xxx
+        karpenter.sh/discovery: cls-${CLUSTER_ID}  # Replace with your TKE cluster ID
+    # Fallback: If tag matching fails, uncomment and use actual security group ID
     # - id: sg-xxx
+
+  # SSH key selection (based on tags, requires pre-tagged SSH keys)
   sshKeySelectorTerms:
     - tags:
-        karpenter.sh/discovery: cls-xxx
+        karpenter.sh/discovery: cls-${CLUSTER_ID}  # Replace with your TKE cluster ID
+    # Fallback: If tag matching fails, uncomment and use actual SSH key ID
     # - id: skey-xxx

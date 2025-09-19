@@ -1,0 +1,41 @@
+apiVersion: karpenter.k8s.tke/v1beta1
+kind: TKEMachineNodeClass
+metadata:
+  name: default  # 与 NodePool 的 nodeClassRef.name 严格一致（必须为"default"）
+  annotations:
+    kubernetes.io/description: "适配test NodePool的通用节点模板，支持S5/SA2机型，按量计费，基于标签选择子网/安全组/SSH密钥"
+spec:
+  # 1. 公网带宽配置（测试场景必配，用于镜像拉取/调试，按量计费固定值）
+  internetAccessible:
+    chargeType: TrafficPostpaidByHour  # TKE-Karpenter 仅支持按量计费带宽
+    maxBandwidthOut: 2  # 2Mbps满足测试需求，避免资源浪费
+
+  # 2. 系统盘配置（必配，规避CloudBasic报错，选择支持的CloudPremium，适配S5/SA2机型）
+  systemDisk:
+    size: 60  # 60GB满足节点初始化需求，预留日志/工具空间
+    type: CloudPremium  # 支持的中高性能磁盘，平衡测试场景性能与成本
+
+  # 3. 数据盘配置（可选，若需存储容器数据则保留，否则可删除）
+  dataDisks:
+  - mountTarget: /var/lib/containerd  # 挂载到容器运行时目录，避免系统盘占满
+    size: 50  # 50GB满足测试场景容器存储需求
+    type: CloudPremium  # 与系统盘类型一致，确保IO性能统一
+    fileSystem: ext4  # Linux通用文件系统，TKE完全兼容
+
+  # 4. 子网选择（核心！基于标签匹配，需提前给子网打"karpenter.sh/discovery: cls-xxx"标签）
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: cls-${CLUSTER_ID}  # 替换为你的TKE集群ID（如cls-merarfq2）
+    # 兜底：若标签匹配失败，可补充实际子网ID（示例：- id: subnet-abc123）
+
+  # 5. 安全组选择（基于标签匹配，需提前给安全组打"karpenter.sh/discovery: cls-xxx"标签）
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: cls-${CLUSTER_ID}  # 替换为你的TKE集群ID
+    # 兜底：若标签匹配失败，可补充实际安全组ID（示例：- id: sg-789ghi）
+
+  # 6. SSH密钥选择（基于标签匹配，需提前给SSH密钥打"karpenter.sh/discovery: cls-xxx"标签）
+  sshKeySelectorTerms:
+    - tags:
+        karpenter.sh/discovery: cls-${CLUSTER_ID}  # 替换为你的TKE集群ID
+    # 兜底：若标签匹配失败，可补充实际SSH密钥ID（示例：- id: skey-jkl101）

@@ -47,15 +47,21 @@ variable "service_cidr" {
 }
 
 variable "instance_type" {
-  description = ""
+  description = "Instance type for worker nodes"
   default     = "SA5.MEDIUM4"
 }
 variable "image_tag" {
-  description = ""
+  description = "Image tag for containers"
   default     = "latest"
 }
 variable "cluster_id" {
   description = "TKE cluster id"
+  type        = string
+  default     = ""
+}
+
+variable "ssh_public_key" {
+  description = "SSH public key for node access"
   type        = string
   default     = ""
 }
