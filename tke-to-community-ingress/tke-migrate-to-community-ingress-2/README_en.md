@@ -1,27 +1,27 @@
-# Solution 2: Shared IngressClass Approach
+# Solution 1: Independent IngressClass Approach
 
 [中文版本](./README.md)
 
-This solution reuses the original IngressClass to enable both new and old controllers to share the same IngressClass.
+This solution creates a completely new IngressClass to achieve complete isolation between new and old controllers.
 
 ```mermaid
 graph LR
     User(User) --> DNS(DNS)
     DNS -->|a.com| TKE_Nginx(TKE NginxIngress controller) -->|old ingressClass| workload 
-    DNS -->|a.com| Ingress_Nginx(Ingress-Nginx controller self-hosted) -->|old ingressClass| workload
+    DNS -->|a.com| Ingress_Nginx(Ingress-Nginx controller self-hosted) -->|new ingressClass| workload
 
 ```
 
 ### Solution Features
-- Reuses the original IngressClass (e.g., `test`), with both new and old controllers sharing the same IngressClass
-- No modification required to existing Ingress resources
-- Traffic switching through weight adjustment
-- Relatively complex configuration requiring precise control
+- Creates a completely new IngressClass (e.g., `new-test`), independent from the original TKE IngressClass
+- New and old controllers operate independently without mutual interference
+- Traffic migration through DNS switching
+- Safest migration process with simple rollback
 
 ### Applicable Scenarios
-- Scenarios where minimal configuration changes are desired
-- Environments requiring progressive migration
-- Situations with numerous Ingress resources that are inconvenient to modify individually
+- Production environment migration
+- Scenarios with extremely high business continuity requirements
+- Users conducting this type of migration for the first time
 
 ### Prerequisites
 - Kubernetes version >= 1.14 and <= 1.28
@@ -47,43 +47,20 @@ In this script, the [values.yaml](file:///Users/tangtang/Desktop/Go/src/PlayBook
 
 ```yaml
 controller:
-  name: new-controller  # New controller workload name
-
-  # Reuse old ingress class name
-  ingressClass: test
-
+  ingressClass: new-test # New IngressClass name to avoid conflicts with existing TKE component
   ingressClassResource:
-    name: test
-    enabled: false  # Do not create new IngressClass
-
-  # Set publish service to old service
-  publishService:
+    name: new-test
     enabled: true
-    pathOverride: "kube-system/test-ingress-nginx-controller"  # Old service path
-
-  # Ensure service configuration is correct
-  service:
-    type: LoadBalancer
-    annotations:
-      service.cloud.tencent.com/custom-weight: "100"  # New controller weight value
-
-# Other necessary configurations
-rbac:
-  create: true
-
-serviceAccount:
-  create: true
-  name: nginx-service-account
-
+    controllerValue: k8s.io/new-test
+  scope:  
+    enabled: true
+    namespace: "ingress-nginx" # Nginx Controller listens to Ingress resources in the specified namespace (optional)
 ```
 
 Configuration Explanation:
-- `controller.name: new-controller` - New controller workload name, must be different from the old one
-- `ingressClass: test` - Specifies IngressClass name as `test`, the same as TKE component's IngressClass name
-- `ingressClassResource.name: test` - Name of the IngressClass resource
-- `ingressClassResource.enabled: false` - Disable IngressClass resource creation to ensure the new controller reuses the existing IngressClass
-- `publishService.pathOverride: kube-system/test-ingress-nginx-controller` - Set publish service to the old service path
-- `service.cloud.tencent.com/custom-weight: "100"` - New controller weight value, directing 100% traffic to the new controller
+- `ingressClass: new-test` - Specifies the new IngressClass name as `new-test`, distinguishing it from TKE component's `test` to avoid conflicts
+- `name: new-test` - Creates an IngressClass resource named `new-test`
+- `controllerValue: k8s.io/new-test` - Sets the controller identifier to ensure new Ingress rules are correctly routed to the new controller instance
 
 This script will complete:
 
@@ -91,9 +68,10 @@ This script will complete:
 - Automatically installs Helm and configures the ingress-nginx official repository
 - Detects the current TKE NginxIngress image version
 - Matches the corresponding Helm Chart version based on the image version
-- Deploys the community version of ingress-nginx using Helm with the same IngressClass as TKE NginxIngress
-- Directly uses existing Ingress configurations, associating them with both new and old controllers
-- Verifies that Ingress configurations are working properly
+- Deploys the community version of ingress-nginx using Helm with an independent IngressClass
+- Copies existing Ingress configurations and modifies the IngressClass to new-test
+- Creates new Ingress rules to enable coexistence of old and new versions
+- Verifies that both old and new Ingress configurations are working properly
 - Tests whether the business exposed by the new Ingress can be accessed normally
 
 #### Verify Access Results of New Self-hosted Ingress-nginx
@@ -117,7 +95,7 @@ This script will complete:
 ./migrate.sh
 ```
 This script will complete:
-- Configures hosts resolution modification to point the domain to the new Ingress entry
+- Tests by directly accessing the new Ingress IP address via curl, avoiding modification of system DNS configuration
 - Verifies the stability and availability of services after migration
 
 #### Verify Access Results After Migration

@@ -10,7 +10,7 @@ TKE NginxIngress 扩展组件已不再支持 TKE 1.30 及以上版本。若需�
 ## 迁移方案对比
 
 ### 方案一：独立 IngressClass 方式（推荐）
-- **目录**：[tke-migrate-to-community-ingress](tke-migrate-to-community-ingress/)
+- **目录**：[tke-migrate-to-community-ingress-2](tke-migrate-to-community-ingress-2/)
 - **核心思想**：创建全新的 IngressClass，与原有 TKE IngressClass 完全独立
 - **特点**：
   - 新旧控制器完全隔离，互不影响
@@ -19,7 +19,7 @@ TKE NginxIngress 扩展组件已不再支持 TKE 1.30 及以上版本。若需�
   - 适合对稳定性要求极高的生产环境
 
 ### 方案二：共享 IngressClass 方式
-- **目录**：[tke-install-community-ingress](tke-install-community-ingress/)
+- **目录**：[tke-migrate-to-community-ingress-1](tke-migrate-to-community-ingress-1/)
 - **核心思想**：复用原有的 IngressClass，新旧控制器共享同一 IngressClass
 - **特点**：
   - 无需修改现有的 Ingress 资源
@@ -90,13 +90,13 @@ TKE NginxIngress 扩展组件已不再支持 TKE 1.30 及以上版本。若需�
 ## 目录结构
 ```
 tke-to-community-ingress/
-├── tke-migrate-to-community-ingress/           # 方案一：独立 IngressClass 方式
+├── tke-migrate-to-community-ingress-2/           # 方案一：独立 IngressClass 方式
 │   ├── README.md         # 方案一详细说明
 │   ├── values.yaml       # Helm 配置文件
 │   ├── install-tke-ingress.sh     # 部署 TKE Ingress 脚本
 │   ├── install-community-ingress.sh  # 部署社区 Ingress 脚本
 │   └── migrate.sh        # 迁移脚本
-└── tke-install-community-ingress/           # 方案二：共享 IngressClass 方式
+└── tke-migrate-to-community-ingress-1/           # 方案二：共享 IngressClass 方式
     ├── README.md         # 方案二详细说明
     ├── values.yaml       # Helm 配置文件
     ├── install-tke-ingress.sh     # 部署 TKE Ingress 脚本

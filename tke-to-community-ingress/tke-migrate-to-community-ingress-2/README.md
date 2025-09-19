@@ -98,7 +98,7 @@ controller:
 ./migrate.sh
 ```
 该脚本将完成：
-- 配置修改hosts解析，将域名指向新的 Ingress 入口
+- 通过 curl 直接访问新 Ingress 的 IP 地址进行测试，避免修改系统 DNS 配置
 - 验证迁移后服务的稳定性和可用性
 #### 验证迁移后的访问结果
 ````
