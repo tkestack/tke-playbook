@@ -8,9 +8,6 @@ resource "random_string" "suffix" {
 resource "tencentcloud_vpc" "main" {
   name       = "vpc-${random_string.suffix.result}"
   cidr_block = var.vpc_cidr
-  tags = {
-    "karpenter.sh/discovery" = "cls-${random_string.suffix.result}"
-  }
 }
 
 #  
@@ -23,7 +20,7 @@ resource "tencentcloud_subnet" "subnets" {
   availability_zone = each.value.az
   tags = {
     az   = "az-${each.value.az}"
-    "karpenter.sh/discovery" = "cls-${random_string.suffix.result}"
+    "karpenter.sh/discovery" = "temp-placeholder"
   }
   depends_on = [
     tencentcloud_vpc.main
@@ -36,7 +33,7 @@ resource "tencentcloud_security_group" "main" {
   name        = "sg-${random_string.suffix.result}"
   description = "security_group_for_tke"
   tags = {
-    "karpenter.sh/discovery" = "cls-${random_string.suffix.result}"
+    "karpenter.sh/discovery" = "temp-placeholder"
   }
 }
 
@@ -92,14 +89,14 @@ output "security_group_id" {
 }
 
 # SSH密钥对
-resource "tencentcloud_ssh_key" "main" {
-  key_name   = "ssh-key-${random_string.suffix.result}"
+resource "tencentcloud_key_pair" "main" {
+  key_name   = "ssh_key_${random_string.suffix.result}"
   public_key = var.ssh_public_key
   tags = {
-    "karpenter.sh/discovery" = "cls-${random_string.suffix.result}"
+    "karpenter.sh/discovery" = "temp-placeholder"
   }
 }
 
 output "ssh_key_id" {
-  value = tencentcloud_ssh_key.main.id
+  value = tencentcloud_key_pair.main.id
 }

@@ -42,6 +42,23 @@ INSTANCE_TYPE=${INSTANCE_TYPE:-"SA5.MEDIUM4"}
 read -p "Please enter SSH public key (optional, leave empty to skip): " SSH_PUBLIC_KEY
 
 
+# 分阶段执行部署
+echo "=== 第一阶段：创建网络基础设施 ==="
+# 只应用network.tf中的资源
+terraform apply -auto-approve -target=random_string.suffix \
+  -target=tencentcloud_vpc.main \
+  -target=tencentcloud_subnet.subnets \
+  -target=tencentcloud_security_group.main \
+  -target=tencentcloud_security_group_rule_set.rules \
+  -target=tencentcloud_key_pair.main \
+  -var="tencentcloud_secret_id=$TENCENTCLOUD_SECRET_ID" \
+  -var="tencentcloud_secret_key=$TENCENTCLOUD_SECRET_KEY" \
+  -var="region=$REGION" \
+  -var="vpc_cidr=$VPC_CIDR" \
+  -var="ssh_public_key=$SSH_PUBLIC_KEY"
+
+echo "=== 第二阶段：创建Kubernetes集群 ==="
+# 应用剩余资源
 terraform apply -auto-approve \
   -var="tencentcloud_secret_id=$TENCENTCLOUD_SECRET_ID" \
   -var="tencentcloud_secret_key=$TENCENTCLOUD_SECRET_KEY" \
@@ -55,6 +72,28 @@ terraform apply -auto-approve \
 # 获取集群ID
 CLUSTER_ID=$(terraform output -raw cluster_id)
 echo "=== 集群ID: $CLUSTER_ID ==="
+
+# 自动更新network.tf文件中的标签
+echo "=== 更新资源标签 ==="
+# 备份原始文件
+cp network.tf network.tf.backup
+
+# 使用sed命令替换标签
+sed -i.bak "s/temp-placeholder/$CLUSTER_ID/g" network.tf
+
+# 应用标签更新
+terraform apply -auto-approve \
+  -target=tencentcloud_subnet.subnets \
+  -target=tencentcloud_security_group.main \
+  -target=tencentcloud_key_pair.main \
+  -var="tencentcloud_secret_id=$TENCENTCLOUD_SECRET_ID" \
+  -var="tencentcloud_secret_key=$TENCENTCLOUD_SECRET_KEY" \
+  -var="region=$REGION" \
+  -var="vpc_cidr=$VPC_CIDR" \
+  -var="ssh_public_key=$SSH_PUBLIC_KEY"
+
+# 恢复备份文件（可选）
+# mv network.tf.backup network.tf
 
 # 等待集群创建完成
 echo "=== 等待集群创建完成 ==="

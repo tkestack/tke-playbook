@@ -25,17 +25,17 @@ spec:
   # 4. 子网选择（核心！基于标签匹配，需提前给子网打"karpenter.sh/discovery: cls-xxx"标签）
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: cls-${CLUSTER_ID}  # 替换为你的TKE集群ID（如cls-merarfq2）
+        karpenter.sh/discovery: cls-bjldpcv2  # 替换为你的TKE集群ID（如cls-merarfq2）
     # 兜底：若标签匹配失败，可补充实际子网ID（示例：- id: subnet-abc123）
 
   # 5. 安全组选择（基于标签匹配，需提前给安全组打"karpenter.sh/discovery: cls-xxx"标签）
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: cls-${CLUSTER_ID}  # 替换为你的TKE集群ID
+        karpenter.sh/discovery: cls-bjldpcv2  # 替换为你的TKE集群ID
     # 兜底：若标签匹配失败，可补充实际安全组ID（示例：- id: sg-789ghi）
 
   # 6. SSH密钥选择（基于标签匹配，需提前给SSH密钥打"karpenter.sh/discovery: cls-xxx"标签）
   sshKeySelectorTerms:
     - tags:
-        karpenter.sh/discovery: cls-${CLUSTER_ID}  # 替换为你的TKE集群ID
+        karpenter.sh/discovery: cls-bjldpcv2  # 替换为你的TKE集群ID
     # 兜底：若标签匹配失败，可补充实际SSH密钥ID（示例：- id: skey-jkl101）

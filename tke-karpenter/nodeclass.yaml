@@ -25,20 +25,20 @@ spec:
   # Subnet selection (based on tags, requires pre-tagged subnets)
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: cls-${CLUSTER_ID}  # Replace with your TKE cluster ID
+        karpenter.sh/discovery: cls-bjldpcv2
     # Fallback: If tag matching fails, uncomment and use actual subnet ID
     # - id: subnet-xxx
 
   # Security group selection (based on tags, requires pre-tagged security groups)
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: cls-${CLUSTER_ID}  # Replace with your TKE cluster ID
+        karpenter.sh/discovery: cls-bjldpcv2  # Replace with your TKE cluster ID
     # Fallback: If tag matching fails, uncomment and use actual security group ID
     # - id: sg-xxx
 
   # SSH key selection (based on tags, requires pre-tagged SSH keys)
   sshKeySelectorTerms:
     - tags:
-        karpenter.sh/discovery: cls-${CLUSTER_ID}  # Replace with your TKE cluster ID
+        karpenter.sh/discovery: cls-bjldpcv2  # Replace with your TKE cluster ID
     # Fallback: If tag matching fails, uncomment and use actual SSH key ID
     # - id: skey-xxx
