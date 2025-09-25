@@ -1,0 +1,7 @@
+title = "TKE 集群控制平面和节点升级工具"
+title_en = "TKE Cluster Control Plane and Node Upgrade Tool"
+description = "使用腾讯云 Python SDK 直接升级 TKE 集群控制平面和工作节点。"
+description_en = "Upgrade TKE cluster control plane and worker nodes directly using Tencent Cloud Python SDK."
+class = "TKE"
+tag = ["tke", "kubernetes", "upgrade", "control-plane", "node-upgrade", "python-sdk", "api-parameters", "api-documentation"]
+draft = false
